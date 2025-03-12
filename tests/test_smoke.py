@@ -6,13 +6,10 @@ from fastapi_pagination import Page
 
 from models.User import User
 from models.AppStatus import AppStatus
-import random
 
 
 @pytest.mark.smoke
-@pytest.mark.usefixtures("app_url", "users")
 class TestUsersSmoke:
-
     def test_smoke(self, app_url: str):
         response = requests.get(f"{app_url}/status/")
         assert response.status_code == HTTPStatus.OK

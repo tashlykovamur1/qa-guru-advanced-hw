@@ -6,7 +6,7 @@ from fastapi_pagination import Page
 
 from models.User import User
 
-
+@pytest.mark.pagination
 class TestUsersPagination:
     @pytest.mark.parametrize("page1, page2, size", [
         (1, 2, 5),
