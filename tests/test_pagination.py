@@ -13,7 +13,7 @@ class TestUsersPagination:
         (2, 3, 5),
         (1, 2, 10),
     ])
-    def test_pagination_different_pages(self, app_url: str, page1: int, page2: int, size: int):
+    def test_pagination_different_pages(self, app_url: str, page1, page2, size):
         """Проверка, что разные страницы возвращают разные данные"""
 
         page1_response = requests.get(f'{app_url}/api/users/', params={"page": page1, "size": size})
@@ -35,7 +35,7 @@ class TestUsersPagination:
         1,
         12,
     ])
-    def test_pagination_total_pages(self, app_url: str, size: int, users: dict):
+    def test_pagination_total_pages(self, app_url: str, size, users: dict):
         """Проверка, что общее количество страниц вычисляется правильно"""
 
         response = requests.get(f"{app_url}/api/users/", params={"size": size})

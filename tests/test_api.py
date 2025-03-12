@@ -36,7 +36,7 @@ class TestUsersApi:
 
 
     @pytest.mark.parametrize("user_id", [-1, 0, "fafaf"])
-    def test_get_user_with_invalid_id(self, app_url: str, user_id: list[Any]):
+    def test_get_user_with_invalid_id(self, app_url: str, user_id):
         """Проверка получения юзера с невалидным user_id"""
         response = requests.get(f"{app_url}/api/users/{user_id}")
         assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY
