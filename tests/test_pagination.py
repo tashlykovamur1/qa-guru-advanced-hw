@@ -13,7 +13,7 @@ class TestUsersPagination:
         (2, 3, 5),
         (1, 2, 10),
     ])
-    def test_pagination_different_pages(self, app_url: str, page1, page2, size):
+    def test_pagination_different_pages(self, app_url: str, page1: int, page2: int, size: int):
         """Проверка, что разные страницы возвращают разные данные"""
 
         page1_response = requests.get(f'{app_url}/api/users/', params={"page": page1, "size": size})
@@ -30,12 +30,21 @@ class TestUsersPagination:
 
         assert page1_result["items"] != page2_result["items"]
 
+        # Проверка, что элементы на страницах уникальны
+        page1_ids = {user["id"] for user in page1_result["items"]}
+        page2_ids = {user["id"] for user in page2_result["items"]}
+
+        assert page1_ids.isdisjoint(page2_ids), (
+            f"Элементы на странице {page1} и странице {page2} пересекаются: "
+            f"{page1_ids.intersection(page2_ids)}"
+        )
+
     @pytest.mark.parametrize("size", [
         4,
         1,
         12,
     ])
-    def test_pagination_total_pages(self, app_url: str, size, users: dict):
+    def test_pagination_total_pages(self, app_url: str, size: int, users: dict):
         """Проверка, что общее количество страниц вычисляется правильно"""
 
         response = requests.get(f"{app_url}/api/users/", params={"size": size})
@@ -52,8 +61,8 @@ class TestUsersPagination:
             f"для size={size} и total_items={len(users["items"])}"
         )
 
-    def test_users_pagination_total(self, app_url: str, users: dict):
-        """Проверка, что общее количество записей вычисляется правильно"""
+    def test_get_users_data_wo_pagination(self, app_url: str, users: dict):
+        """Проверка, что общее количество записей без пагинации вычисляется правильно"""
 
         response = requests.get(f"{app_url}/api/users/")
         assert response.status_code == HTTPStatus.OK
@@ -64,3 +73,22 @@ class TestUsersPagination:
         assert result["page"] == 1
         assert result["pages"] == 1
         assert result["size"] == 50 # дефолтное значение, которое возвращает пагинация фаст апи
+
+    @pytest.mark.parametrize("page, size", [
+        (1, 10),
+        (5, 5),
+        (3, 5),
+        (1, 1)
+    ])
+    def test_pagination_with_diff_size_and_page(self, app_url: str, page: int, size: int, users: dict):
+        response = requests.get(f"{app_url}/api/users/", params={"page": page, "size": size})
+        assert response.status_code == HTTPStatus.OK
+
+        result = response.json()
+        Page[User].model_validate(result)
+
+        assert result["total"] == len(users["items"])
+        assert result["page"] == page
+        assert result["pages"] == (len(users["items"]) + size - 1) // size
+        assert result["size"] == size
+

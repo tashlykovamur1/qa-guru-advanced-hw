@@ -8,7 +8,7 @@ import pytest
 
 
 @pytest.fixture(autouse=True)
-def envs():
+def envs() -> None:
     dotenv.load_dotenv()
 
 
