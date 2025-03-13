@@ -4,8 +4,8 @@ from http import HTTPStatus
 
 from fastapi_pagination import Page
 
-from models.User import User
-from models.AppStatus import AppStatus
+from app.models.User import User
+from app.models.AppStatus import AppStatus
 
 
 @pytest.mark.smoke
