@@ -17,7 +17,7 @@ class TestUsersSmoke:
         result = response.json()
         AppStatus.model_validate(result)
 
-        assert result["users"]
+        assert result["database"]
 
     def test_smoke_users(self, app_url: str):
         response = requests.get(f"{app_url}/api/users/")

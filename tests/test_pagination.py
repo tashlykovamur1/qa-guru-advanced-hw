@@ -54,11 +54,11 @@ class TestUsersPagination:
         Page[User].model_validate(result)
 
         actual_pages = result["pages"]
-        expected_pages = (len(users["items"]) + size - 1) // size
+        expected_pages = (len(users) + size - 1) // size
 
         assert actual_pages == expected_pages, (
             f"Ожидалось {expected_pages} страниц, но получено {actual_pages} "
-            f"для size={size} и total_items={len(users["items"])}"
+            f"для size={size} и total_items={len(users)}"
         )
 
     def test_get_users_data_wo_pagination(self, app_url: str, users: dict):
@@ -69,7 +69,7 @@ class TestUsersPagination:
         result = response.json()
         Page[User].model_validate(result)
 
-        assert result["total"] == len(users["items"])
+        assert result["total"] == len(users)
         assert result["page"] == 1
         assert result["pages"] == 1
         assert result["size"] == 50 # дефолтное значение, которое возвращает пагинация фаст апи
@@ -87,8 +87,8 @@ class TestUsersPagination:
         result = response.json()
         Page[User].model_validate(result)
 
-        assert result["total"] == len(users["items"])
+        assert result["total"] == len(users)
         assert result["page"] == page
-        assert result["pages"] == (len(users["items"]) + size - 1) // size
+        assert result["pages"] == (len(users) + size - 1) // size
         assert result["size"] == size
 
