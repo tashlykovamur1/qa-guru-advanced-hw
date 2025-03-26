@@ -3,7 +3,7 @@ import pytest
 import requests
 
 from app.models.User import User
-from tests.conftest import AUTOTEST_PREFIX
+from tests.conftest import AUTOTEST_PREFIX, generate_user_data
 
 
 class TestUsers:
@@ -41,15 +41,16 @@ class TestUsers:
         response = requests.get(f"{app_url}/api/users/{user_id}")
         assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY
 
-    def test_create_user(self, app_url: str, generate_user_data: dict[str, str]):
+    def test_create_user(self, app_url: str):
         """Проверка создания юзера"""
-        response = requests.post(f"{app_url}/api/users/", json=generate_user_data)
+        created_user_data = generate_user_data()
+        response = requests.post(f"{app_url}/api/users/", json=created_user_data)
         assert response.status_code == HTTPStatus.CREATED
 
         user = response.json()
         User.model_validate(user)
         del user['id']
-        assert generate_user_data == user
+        assert created_user_data == user
 
     def test_delete_user(self, app_url: str, create_user: dict):
         """Проверка удаления юзера"""

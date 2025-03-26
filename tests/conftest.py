@@ -1,4 +1,3 @@
-import json
 import os
 from http import HTTPStatus
 
@@ -8,8 +7,6 @@ import pytest
 import random
 
 from faker import Faker
-
-from users import test_users
 
 faker = Faker()
 AUTOTEST_PREFIX = "autotest"
@@ -31,8 +28,8 @@ def generate_users(app_url: str) -> list[int]:
     _clear_users_in_db(app_url)  # Очистка перед началом
 
     api_users = []
-    for user in test_users:
-        response = requests.post(f"{app_url}/api/users/", json=user)
+    for _ in range(12):
+        response = requests.post(f"{app_url}/api/users/", json=generate_user_data())
         api_users.append(response.json())
 
     user_ids = [user["id"] for user in api_users]
@@ -42,10 +39,10 @@ def generate_users(app_url: str) -> list[int]:
     _clear_users_in_db(app_url)
 
 @pytest.fixture(scope="function")
-def create_user(app_url: str, generate_user_data: dict[str, str]) -> dict:
+def create_user(app_url: str ) -> dict:
     """Создание пользователя для теста"""
 
-    response = requests.post(f"{app_url}/api/users/", json=generate_user_data)
+    response = requests.post(f"{app_url}/api/users/", json=generate_user_data())
     assert response.status_code == HTTPStatus.CREATED
 
     yield response.json()
@@ -70,7 +67,6 @@ def _clear_users_in_db(app_url: str) -> None:
         requests.delete(f"{app_url}/api/users/{user['id']}")
 
 
-@pytest.fixture
 def generate_user_data() -> dict[str, str]:
     """Генерация данных для тестового юзера"""
     user_data = {
