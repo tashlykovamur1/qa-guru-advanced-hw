@@ -10,7 +10,6 @@ jobs:
     env:
       POSTGRES_USER: ci
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-      DATABASE_POOL_SIZE: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -24,6 +23,7 @@ jobs:
       - run: pytest tests --junit-xml=test-results.xml
         env:
           APP_URL: http://127.0.0.1:8002
+          DATABASE_ENGINE: postgresql+psycopg2://${{env.POSTGRES_USER}}:${{env.POSTGRES_PASSWORD}}@localhost:5432/${{env.POSTGRES_USER}}
 
       - run: docker compose logs app db
         if: always()

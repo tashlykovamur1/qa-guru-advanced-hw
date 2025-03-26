@@ -5,7 +5,6 @@ services:
     build: .
     environment:
       DATABASE_ENGINE: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_USER}
-      DATABASE_POOL_SIZE: ${DATABASE_POOL_SIZE}
     ports:
       - 8002:80
     depends_on:
