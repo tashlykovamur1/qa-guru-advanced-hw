@@ -1,7 +1,6 @@
-Проект представляет собой копию сервиса Reqres, написанного на **FastAPI** и **Python**. 
-Проект использует **uv** для управления зависимостями и **pytest** для тестирования.
+Проект представляет собой копию сервиса Reqres, написанного на **FastAPI** и **Python**.
 
-## Установка и запуск
+Проект использует **uv** для управления зависимостями и **pytest** для тестирования.
 
 ### Предварительные требования
 
@@ -24,8 +23,7 @@ uv --version # проверка, что корректно установлен
 1. Клонируйте репозиторий:
 
 ```bash
-  git clone https://github.com/your-username/hw0-reqres-copy.git
-  cd hw0-reqres-copy
+  git clone https://github.com/tashlykovamur1/qa-guru-advanced-hw.git
 ```
 2. Создайте и активируйте виртуальное окружение
 ```commandline
@@ -34,25 +32,39 @@ source .venv/bin/activate
 ```
 3. Установите зависимости с помощью uv:
 ```bash
-uv pip install -r <(uv pip compile pyproject.toml --all-extras)
+uv pip install -r requirements.txt
 ```
+4. Создайте .env файл с переменными окружения по шаблону .env.sample
 
 ### Локальный запуск сервиса
 
 ```bash
 uvicorn app:app --reload
 ```
-Сервис будет доступен по адресу: http://localhost:8000
+или
+```
+python app.py
+```
+Сервис будет доступен по адресу: http://localhost:8002
 
 ### Запуск тестов
 ```bash
-pytest
+# запустить все тесты
+pytest 
+
+# запустить смок
+pytest -m smoke
+
+# запустить тесты на пагинацию
+pytest -m pagination
 ```
 
 ### Структура проекта
-* app.py — основной файл приложения FastAPI.
-* tests/ — директория с тестами.
-* pyproject.toml — файл конфигурации проекта, включающий зависимости и метаданные.
+* app.py — основной файл приложения FastAPI
+* models/ - директория с Pydantic моделями
+* tests/ — директория с тестами
+* requirements.txt — файл c зависимостями проекта
+* pytest.ini - файл с настройками конфигурации pytest
 
 ### Зависимости
 Основные зависимости проекта:
@@ -60,3 +72,4 @@ pytest
 * **Uvicorn** — ASGI-сервер для запуска FastAPI. 
 * **Pytest** — фреймворк для написания и запуска тестов. 
 * **Requests** — библиотека для выполнения HTTP-запросов.
+* **Pydantic** - библиотека для валидации схем
