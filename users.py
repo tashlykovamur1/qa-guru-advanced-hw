@@ -1,4 +1,4 @@
-[
+test_users = [
   {
     "email": "george.bluth@autotest.com",
     "first_name": "George",

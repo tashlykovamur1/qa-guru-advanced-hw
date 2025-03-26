@@ -9,6 +9,8 @@ import random
 
 from faker import Faker
 
+from users import test_users
+
 faker = Faker()
 AUTOTEST_PREFIX = "autotest"
 
@@ -27,8 +29,6 @@ def app_url() -> str:
 def generate_users(app_url: str) -> list[int]:
     """Генерация пользователей для сессии с тестами и удаление"""
 
-    with open("../users.json", "r", encoding="utf-8") as f:
-        test_users = json.load(f)
     api_users = []
     for user in test_users:
         response = requests.post(f"{app_url}/api/users/", json=user)
