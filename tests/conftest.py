@@ -28,6 +28,7 @@ def app_url() -> str:
 @pytest.fixture(scope="session", autouse=True)
 def generate_users(app_url: str) -> list[int]:
     """Генерация пользователей для сессии с тестами и удаление"""
+    _clear_users_in_db(app_url)  # Очистка перед началом
 
     api_users = []
     for user in test_users:
