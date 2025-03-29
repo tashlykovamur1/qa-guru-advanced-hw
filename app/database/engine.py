@@ -9,6 +9,7 @@ engine = create_engine(os.getenv("DATABASE_ENGINE"), pool_size=int(os.getenv('DA
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
 
+
 def check_availability() -> bool:
     try:
         with Session(engine) as session:

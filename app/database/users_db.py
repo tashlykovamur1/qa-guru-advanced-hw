@@ -3,6 +3,7 @@ from typing import Iterable, Type
 from fastapi import HTTPException
 from fastapi_pagination.ext import sqlmodel
 from sqlmodel import Session, select
+
 from app.database.engine import engine
 from app.models.User import User
 
@@ -11,10 +12,12 @@ def get_user(user_id: int) -> User | None:
     with Session(engine) as session:
         return session.get(User, user_id)
 
+
 def get_users() -> Iterable[User]:
     with Session(engine) as session:
         statement = select(User)
         return sqlmodel.paginate(session, statement)
+
 
 def create_user(user: User) -> User:
     with Session(engine) as session:
@@ -22,6 +25,7 @@ def create_user(user: User) -> User:
         session.commit()
         session.refresh(user)
         return user
+
 
 def update_user(user_id: int, user: User) -> Type[User]:
     with Session(engine) as session:

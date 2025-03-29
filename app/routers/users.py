@@ -1,11 +1,11 @@
+from http import HTTPStatus
 from typing import Iterable
 
 from fastapi import APIRouter, HTTPException
-from http import HTTPStatus
+from fastapi_pagination import add_pagination, Page
 
 from app.database import users_db
 from app.models.User import User, UserCreate, UserUpdate
-from fastapi_pagination import add_pagination, Page
 
 router = APIRouter(prefix="/api/users")
 add_pagination(router)
