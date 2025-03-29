@@ -1,20 +1,35 @@
 import os
+import random
 from http import HTTPStatus
 
-import requests
 import dotenv
 import pytest
-import random
-
+import requests
 from faker import Faker
+
+from clients.users_api import UsersApi
 
 faker = Faker()
 AUTOTEST_PREFIX = "autotest"
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope='session', autouse=True)
 def envs():
     dotenv.load_dotenv()
+
+
+def pytest_addoption(parser):
+    parser.addoption("--env", default="dev")
+
+
+@pytest.fixture(scope="session")
+def env(request):
+    return request.config.getoption("--env")
+
+
+@pytest.fixture(scope="function")
+def users_api(env):
+    yield UsersApi(env)
 
 
 @pytest.fixture(scope="session")
@@ -38,8 +53,9 @@ def generate_users(app_url: str) -> list[int]:
 
     _clear_users_in_db(app_url)
 
+
 @pytest.fixture(scope="function")
-def create_user(app_url: str ) -> dict:
+def create_user(app_url: str) -> dict:
     """Создание пользователя для теста"""
 
     response = requests.post(f"{app_url}/api/users/", json=generate_user_data())
