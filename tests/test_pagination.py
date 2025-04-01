@@ -5,7 +5,6 @@ from fastapi_pagination import Page
 
 from app.models.User import User
 from clients.users_api import UsersApi
-from tests.conftest import users_api
 
 
 @pytest.mark.pagination

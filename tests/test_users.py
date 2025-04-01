@@ -4,7 +4,7 @@ import pytest
 
 from app.models.User import User
 from clients.users_api import UsersApi
-from tests.conftest import AUTOTEST_PREFIX, generate_user_data, users_api
+from tests.conftest import AUTOTEST_PREFIX, generate_user_data
 
 
 class TestUsers:
