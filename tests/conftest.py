@@ -31,6 +31,7 @@ def users_api(env):
     yield api
     api.session.close()
 
+
 @pytest.fixture(scope="session", autouse=True)
 def generate_users(users_api: UsersApi) -> list[int]:
     """Генерация пользователей для сессии с тестами и удаление"""
