@@ -1,10 +1,11 @@
 from http import HTTPStatus
 
 import pytest
-import requests
 from fastapi_pagination import Page
 
 from app.models.User import User
+from clients.users_api import UsersApi
+
 
 @pytest.mark.pagination
 class TestUsersPagination:
@@ -13,13 +14,13 @@ class TestUsersPagination:
         (2, 3, 5),
         (1, 2, 10),
     ])
-    def test_pagination_different_pages(self, app_url: str, page1: int, page2: int, size: int):
+    def test_pagination_different_pages(self, users_api: UsersApi, page1: int, page2: int, size: int):
         """Проверка, что разные страницы возвращают разные данные"""
 
-        page1_response = requests.get(f'{app_url}/api/users/', params={"page": page1, "size": size})
+        page1_response = users_api.get_users(params={"page": page1, "size": size})
         assert page1_response.status_code == HTTPStatus.OK
 
-        page2_response = requests.get(f"{app_url}/api/users/", params={"page": page2, "size": size})
+        page2_response = users_api.get_users(params={"page": page2, "size": size})
         assert page2_response.status_code == HTTPStatus.OK
 
         page1_result = page1_response.json()
@@ -44,10 +45,10 @@ class TestUsersPagination:
         1,
         12,
     ])
-    def test_pagination_total_pages(self, app_url: str, size: int, users: dict):
+    def test_pagination_total_pages(self, users_api: UsersApi, size: int, users: dict):
         """Проверка, что общее количество страниц вычисляется правильно"""
 
-        response = requests.get(f"{app_url}/api/users/", params={"size": size})
+        response = users_api.get_users(params={"size": size})
         assert response.status_code == HTTPStatus.OK
 
         result = response.json()
@@ -61,10 +62,10 @@ class TestUsersPagination:
             f"для size={size} и total_items={len(users)}"
         )
 
-    def test_get_users_data_wo_pagination(self, app_url: str, users: dict):
+    def test_get_users_data_wo_pagination(self, users_api: UsersApi, users: dict):
         """Проверка, что общее количество записей без пагинации вычисляется правильно"""
 
-        response = requests.get(f"{app_url}/api/users/")
+        response = users_api.get_users()
         assert response.status_code == HTTPStatus.OK
         result = response.json()
         Page[User].model_validate(result)
@@ -72,7 +73,7 @@ class TestUsersPagination:
         assert result["total"] == len(users)
         assert result["page"] == 1
         assert result["pages"] == 1
-        assert result["size"] == 50 # дефолтное значение, которое возвращает пагинация фаст апи
+        assert result["size"] == 50  # дефолтное значение, которое возвращает пагинация фаст апи
 
     @pytest.mark.parametrize("page, size", [
         (1, 10),
@@ -80,8 +81,8 @@ class TestUsersPagination:
         (3, 5),
         (1, 1)
     ])
-    def test_pagination_with_diff_size_and_page(self, app_url: str, page: int, size: int, users: dict):
-        response = requests.get(f"{app_url}/api/users/", params={"page": page, "size": size})
+    def test_pagination_with_diff_size_and_page(self, users_api: UsersApi, page: int, size: int, users: dict):
+        response = users_api.get_users(params={"page": page, "size": size})
         assert response.status_code == HTTPStatus.OK
 
         result = response.json()
@@ -91,4 +92,3 @@ class TestUsersPagination:
         assert result["page"] == page
         assert result["pages"] == (len(users) + size - 1) // size
         assert result["size"] == size
-

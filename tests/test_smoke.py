@@ -1,17 +1,17 @@
-import pytest
-import requests
 from http import HTTPStatus
 
+import pytest
 from fastapi_pagination import Page
 
-from app.models.User import User
 from app.models.AppStatus import AppStatus
+from app.models.User import User
+from clients.users_api import UsersApi
 
 
 @pytest.mark.smoke
 class TestUsersSmoke:
-    def test_smoke(self, app_url: str):
-        response = requests.get(f"{app_url}/status/")
+    def test_smoke(self, users_api: UsersApi):
+        response = users_api.get_app_status()
         assert response.status_code == HTTPStatus.OK
 
         result = response.json()
@@ -19,8 +19,8 @@ class TestUsersSmoke:
 
         assert result["database"]
 
-    def test_smoke_users(self, app_url: str):
-        response = requests.get(f"{app_url}/api/users/")
+    def test_smoke_users(self, users_api: UsersApi):
+        response = users_api.get_users()
         assert response.status_code == HTTPStatus.OK
 
         result = response.json()
